@@ -5,7 +5,7 @@
 #
 # Name          : Julia Kaczmarek   
 # Collaborators : ---
-# Time spent    : Sun 9th 22:52 - 
+# Time spent    : Sun 9th 22:52 - mon 24 1:54
 
 import math
 import random
@@ -335,19 +335,29 @@ def substitute_hand(hand:dict, letter:str) -> dict:
     letter: string
     returns: dictionary (string -> int)
     """
+
     subbed_hand = hand.copy()
+
+    # if the required letter is in the dictionary, delete it
     if letter in subbed_hand:
-        num_copies = subbed_hand[letter]
         del(subbed_hand[letter])
 
+    # find available letters which are not in the hand already and not the requested letter
         available_letters= ""
         for l in VOWELS+CONSONANTS:
-            if l in subbed_hand:
+            if l in subbed_hand or l == letter:
                 continue
             available_letters += l
 
-        sub = random.choice(available_letters)
-        subbed_hand[sub] = num_copies
+    # find number of missing letters by subtracting current dict.values() sum from 7
+        num_needed = 7 - sum([i for i in subbed_hand.values()])
+        for i in range(num_needed):
+            sub = random.choice(available_letters)
+            # if the letter is already in the hand, increase its count
+            if sub in subbed_hand:
+                subbed_hand[sub] += 1
+            else:
+                subbed_hand[sub] = 1
     return subbed_hand
 
        
@@ -382,7 +392,12 @@ def play_game(word_list:list) -> int:
 
     word_list: list of lowercase strings
     """
-    total_number_of_hands = int(input("How many hands would you like to play? "))
+    try:
+        total_number_of_hands = int(input("How many hands would you like to play? "))
+    except ValueError:
+        print("Invalid input. Please enter an integer.")
+        return play_game(word_list)
+
     total_game_score = 0
     can_sub = True
     can_replay = True
@@ -390,15 +405,23 @@ def play_game(word_list:list) -> int:
     for _ in range(total_number_of_hands):
         hand = deal_hand(HAND_SIZE)
         display_hand(hand)
+        
         if can_sub:
             sub = input("Would you like to substitute a letter? (yes/no) ")
+            while sub.lower() not in ['yes','no']:
+                sub = input("Would you like to substitute a letter? YES OR NO? ")
+            
             if sub.lower() == 'yes':
                 letter = input("What letter do you want to substitute? ")
                 hand = substitute_hand(hand, letter)
                 can_sub = False
+        
         if can_replay:
             interim_score1 = play_hand(hand, word_list)
             replay = input("Would you like to replay the hand and keep the best score? ")
+            while replay.lower() not in ["yes","no"]:
+                replay = input("Would you like to replay the hand and keep the best score? YES OR NO? ")
+
             if replay.lower() == "yes":
                 interim_score2 = play_hand(hand, word_list)
                 total_game_score += max(interim_score1, interim_score2)
