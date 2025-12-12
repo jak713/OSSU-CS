@@ -32,7 +32,6 @@ def get_permutations(sequence):
     result = []
 
     for perm in permutations:
-        print('\n',perm)
         for i in range(len(perm)+1):
             # Build a new string character by character
             new_perm = ""
@@ -49,7 +48,6 @@ def get_permutations(sequence):
                 new_perm += perm[j]
             
             result.append(new_perm)
-        print(result)
     return sorted(result)
 
 if __name__ == '__main__':
