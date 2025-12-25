@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# include all files (-a)
+# size listed in human readable format (-h)
+# files ordered by recency (-t or --sort=time)
+# output colorised (--color=auto)
+
+ls -l -a -h -t --color=auto
