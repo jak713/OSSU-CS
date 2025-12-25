@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Retrieving CPU temperature..."
+thermal_dir="/sys/class/thermal"
+base="thermal_zone"
+
+for i in {0..8}; do
+    echo "";
+    echo "${base}${i}:";
+    temp=$(< "${thermal_dir}/${base}${i}/temp")
+    temp=$(($temp/1000))
+    echo "${temp}°C"
+done
